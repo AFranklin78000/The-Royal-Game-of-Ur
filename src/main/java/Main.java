@@ -1,5 +1,6 @@
 package main.java;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -18,22 +19,38 @@ public class Main {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        LOG("Init System", "Wait complete, start writing logs to files. " +
-                "Final message: Farewell!");
+        LOG("Init System", "Wait complete, start writing logs to files.");
 
-        try (FileWriter writer = new FileWriter("logs/" +
+        File logs = new File("logs/");
+
+        if (!logs.exists()) {
+            LOG("Init System", "Logs directory doesn't exist; creating logs directory...");
+            logs.mkdir();
+            LOG("Init System", "Logs directory created.");
+        }
+
+        LOG("Init System", "Final log message: Farewell!");
+
+        File log = new File("logs/" +
                 LocalDateTime.now().format(
-                        DateTimeFormatter.ofPattern("MM-dd-uuuu HH:mm:ss")) + ".txt")) {
+                        DateTimeFormatter.ofPattern("MM-dd-uuuu HH_mm_ss")) + ".txt");
+        File logLatest = new File("logs/latest.txt");
+
+        try (FileWriter writer = new FileWriter(log)) {
+            log.createNewFile();
             writer.write(LOG);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        try (FileWriter writerLatest = new FileWriter("logs/latest.txt")) {
-            writerLatest.write(LOG);
+        try (FileWriter writer = new FileWriter(logLatest)) {
+            logLatest.createNewFile();
+            writer.write(LOG);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        System.out.println("<Base System> Program complete, shutting down.");
     }
 
     private void run() {
