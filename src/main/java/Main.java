@@ -9,7 +9,8 @@ import java.time.format.DateTimeFormatter;
 
 public class Main {
 
-    public static void main(String[] args) {
+    @SuppressWarnings({"unused"})
+    static void main(String[] args) {
         Main main = new Main();
         main.run();
 
@@ -25,8 +26,9 @@ public class Main {
 
         if (!logs.exists()) {
             LOG("Init System", "Logs directory doesn't exist; creating logs directory...");
-            logs.mkdir();
-            LOG("Init System", "Logs directory created.");
+            if (logs.mkdir()) {
+                LOG("Init System", "Logs directory created.");
+            }
         }
 
         LOG("Init System", "Final log message: Farewell!");
@@ -37,15 +39,17 @@ public class Main {
         File logLatest = new File("logs/latest.txt");
 
         try (FileWriter writer = new FileWriter(log)) {
-            log.createNewFile();
-            writer.write(LOG);
+            if (log.createNewFile()) {
+                writer.write(LOG);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         try (FileWriter writer = new FileWriter(logLatest)) {
-            logLatest.createNewFile();
-            writer.write(LOG);
+            if (logLatest.createNewFile()) {
+                writer.write(LOG);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -61,21 +65,25 @@ public class Main {
 
     private static String LOG = "";
 
+    @SuppressWarnings("unused")
     public static void LOG(String messenger, String message) {
         System.out.println("[" + LocalTime.now() + "] <" + messenger + "> " + message);
         LOG = LOG.concat("[" + LocalTime.now() + "] <" + messenger + "> " + message + "\n");
     }
 
+    @SuppressWarnings("unused")
     public static void LOG(String messenger, Object message) {
         System.out.println("[" + LocalTime.now() + "] <" + messenger + "> " + message);
         LOG = LOG.concat("[" + LocalTime.now() + "] <" + messenger + "> " + message.toString() + "\n");
     }
 
+    @SuppressWarnings("unused")
     public static void LOG(String message) {
         System.out.println("[" + LocalTime.now() + "] <Basic System> " + message);
         LOG = LOG.concat("[" + LocalTime.now() + "] <Basic System> " + message + "\n");
     }
 
+    @SuppressWarnings("unused")
     public static void LOG(Object message) {
         System.out.println("[" + LocalTime.now() + "] <Basic System> " + message);
         LOG = LOG.concat("[" + LocalTime.now() + "] <Basic System> " + message.toString() + "\n");
